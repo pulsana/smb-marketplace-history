@@ -16,3 +16,7 @@ node_modules
 
 # build
 dist
+
+# ignore artifacts
+build
+coverage
