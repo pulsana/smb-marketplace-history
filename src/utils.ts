@@ -3,10 +3,45 @@ import {
   PartiallyDecodedInstruction,
   ParsedInnerInstruction,
   ParsedConfirmedTransactionMeta,
+  PublicKey,
 } from '@solana/web3.js';
+
+import { METAPLEX_METADATA_PROGRAM_ADDRESS } from './metaplex/constants';
+import { METADATA_PREFIX } from './metaplex/types';
+import { findProgramAddressPublicKey } from './metaplex/utils';
 
 export function buildProgramKey(ix: any) {
   return `${ix.program}--${ix.programId.toString()}`;
+}
+
+export async function getMetadataAddressForMint({
+  metadataContractPK = new PublicKey(METAPLEX_METADATA_PROGRAM_ADDRESS),
+  mintTokenPublicKey,
+}: {
+  metadataContractPK?: PublicKey;
+  mintTokenPublicKey: PublicKey;
+}): Promise<PublicKey> {
+  const publicKeyForMint = await findProgramAddressPublicKey(
+    [
+      Buffer.from(METADATA_PREFIX),
+      metadataContractPK.toBuffer(),
+      mintTokenPublicKey.toBuffer(),
+    ],
+    metadataContractPK
+  );
+
+  return publicKeyForMint;
+}
+
+// TODO: figure out how to use types with PartiallyDecodedInstruction
+export function mergeInstructions(msgInstructions, innerInstructions) {
+  const instructions = [...msgInstructions];
+
+  for (const innerInstrSet of innerInstructions) {
+    instructions.splice(innerInstrSet.index, 0, ...innerInstrSet.instructions);
+  }
+
+  return instructions;
 }
 
 export function groupMetaInstructionsByProgram(

@@ -8,7 +8,7 @@ import { PublicKey } from '@solana/web3.js';
 import { METAPLEX_METADATA_PROGRAM_ADDRESS } from './constants';
 import { EDITION, METADATA_PREFIX, StringPublicKey } from './types';
 
-const findProgramAddressPublicKey = async (
+export const findProgramAddressPublicKey = async (
   seeds,
   programId
 ): Promise<PublicKey> => {

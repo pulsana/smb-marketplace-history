@@ -13,7 +13,7 @@ import {
   SYSTEM_PROGRAM_KEY,
 } from './constants';
 import { Tx, TxStatus, TxType } from './types';
-import { groupMetaInstructionsByProgram } from './utils';
+import { groupMetaInstructionsByProgram, mergeInstructions } from './utils';
 
 export async function checkTransaction(
   conn: Connection,
@@ -56,16 +56,21 @@ export async function parseTransactionByType({
 }) {
   const txHash = ptx.transaction.signatures[0];
 
+  const instrs = mergeInstructions(
+    ptx.transaction.message.instructions,
+    ptx.meta.innerInstructions
+  );
+
   if (txType === TxType.DELISTING) {
-    await parseDelistTx(conn, txHash);
+    await parseDelistTx(conn, txHash, instrs);
   }
 
   if (txType === TxType.LISTING) {
-    await parseListTx(conn, txHash);
+    await parseListTx(conn, txHash, instrs);
   }
 
   if (txType === TxType.SALE) {
-    await parseSaleTx(conn, txHash);
+    await parseSaleTx(conn, txHash, instrs);
   }
 }
 

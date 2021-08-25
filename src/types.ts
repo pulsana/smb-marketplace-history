@@ -1,3 +1,12 @@
+export enum SolanaProgram {
+  SPL_TOKEN = 'spl-token',
+  SYSTEM = 'system',
+}
+
+export enum SolanaProgramInstructionType {
+  TRANSFER = 'transfer',
+}
+
 export enum TxStatus {
   FAILURE = 'FAILURE',
   SUCCESS = 'SUCCESS',
