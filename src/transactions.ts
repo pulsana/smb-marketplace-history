@@ -1,4 +1,12 @@
-import { Connection, ConfirmedSignatureInfo } from '@solana/web3.js';
+import {
+  Connection,
+  ConfirmedSignatureInfo,
+  ParsedConfirmedTransaction,
+} from '@solana/web3.js';
+
+import { parseDelistTx } from './transactions/delisting';
+import { parseListTx } from './transactions/listing';
+import { parseSaleTx } from './transactions/sale';
 
 import {
   METAPLEX_SPL_TOKEN_PROGRAM_KEY,
@@ -7,10 +15,6 @@ import {
 import { Tx, TxStatus, TxType } from './types';
 import { groupMetaInstructionsByProgram } from './utils';
 
-// ***** TEST TRANSACTION HASHES
-// DELISTING :: 5mbEeH1KSPm2wXxr9akqKA5dPcDnSa1KZ8h9dgryqsNqv5TBZHHeNku4mAZxdp4ihrmqPm2Z4ywax2qRnuVJr5pZ
-// LISTING   :: 41kFiYVk5pDsBCW2Lz4H12tAhRefmrCsXSoFqHxsDwzRSnKssRaWXnd8kKv4v9Rbvkfwvo4GYwjxCNKVkxYpvc2H
-// SALE      :: 3iu2WRAEXaA5p2bZ1duz9H6ZNe7uJQMgYbHGU9hDaRG6KB6NDVsrvyvoJcvuLr35NAWbfYB6xwW4yCwVQCYPo5hw
 export async function checkTransaction(
   conn: Connection,
   confSignature: ConfirmedSignatureInfo
@@ -38,6 +42,30 @@ export async function checkTransaction(
     console.log(`\t\tTx Hash: ${txHash}`);
     console.log(`\t\tTx Type: ${txType}`);
     console.log(`\t\tErr Message: ${e}`);
+  }
+}
+
+export async function parseTransactionByType({
+  conn,
+  ptx,
+  txType,
+}: {
+  conn: Connection;
+  ptx: ParsedConfirmedTransaction;
+  txType: TxType;
+}) {
+  const txHash = ptx.transaction.signatures[0];
+
+  if (txType === TxType.DELISTING) {
+    await parseDelistTx(conn, txHash);
+  }
+
+  if (txType === TxType.LISTING) {
+    await parseListTx(conn, txHash);
+  }
+
+  if (txType === TxType.SALE) {
+    await parseSaleTx(conn, txHash);
   }
 }
 
