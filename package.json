@@ -5,5 +5,9 @@
   "main": "index.js",
   "repository": "https://github.com/boxwooddev/smb-marketplace-history.git",
   "author": "rob shaw <rob@statik.dev>",
+  "engineStrict": true,
+  "engines": {
+    "node": "=16.6.0"
+  },
   "private": false
 }
