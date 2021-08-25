@@ -4,6 +4,8 @@
 */
 
 import { PublicKey } from '@solana/web3.js';
+
+import { METAPLEX_METADATA_PROGRAM_ADDRESS } from './constants';
 import { EDITION, METADATA_PREFIX, StringPublicKey } from './types';
 
 const findProgramAddressPublicKey = async (
@@ -16,9 +18,7 @@ const findProgramAddressPublicKey = async (
 
 // metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s
 export async function getProgramAddressForPublicKey({
-  metadataContractPK = new PublicKey(
-    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
-  ),
+  metadataContractPK = new PublicKey(METAPLEX_METADATA_PROGRAM_ADDRESS),
   tokenMintPK,
 }: {
   metadataContractPK?: PublicKey;
