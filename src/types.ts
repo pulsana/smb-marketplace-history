@@ -4,6 +4,16 @@ export interface MetaplexMetadata {
   symbol: string;
 }
 
+export interface SMBNFTMetadata {
+  description: string;
+  external_url?: string;
+  image: string;
+  name: string;
+  properties: any;
+  seller_fee_basis_points: number;
+  symbol: string;
+}
+
 export enum SolanaProgram {
   SPL_TOKEN = 'spl-token',
   SYSTEM = 'system',
