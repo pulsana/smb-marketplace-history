@@ -2,11 +2,11 @@ import { Connection, PublicKey } from '@solana/web3.js';
 
 import { decodeMetadata } from './metaplex/metadata';
 
-import { NFTMetadata } from './types';
+import { MetaplexMetadata } from './types';
 import { getMetadataAddressForMint } from './utils';
 
 export async function getMetadataForMintToken(conn: Connection, addr: string) {
-  const nftMetadata: NFTMetadata = {
+  const metaplexMetadata: MetaplexMetadata = {
     name: null,
     metadataUri: null,
     symbol: null,
@@ -19,9 +19,9 @@ export async function getMetadataForMintToken(conn: Connection, addr: string) {
   const mintinfo = await conn.getAccountInfo(nftPDA);
   const metadata = decodeMetadata(mintinfo.data);
 
-  nftMetadata.name = metadata.data.name;
-  nftMetadata.metadataUri = metadata.data.uri;
-  nftMetadata.symbol = metadata.data.symbol;
+  metaplexMetadata.name = metadata.data.name;
+  metaplexMetadata.metadataUri = metadata.data.uri;
+  metaplexMetadata.symbol = metadata.data.symbol;
 
-  console.log(nftMetadata);
+  console.log(metaplexMetadata);
 }

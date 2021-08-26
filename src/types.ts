@@ -1,4 +1,4 @@
-export interface NFTMetadata {
+export interface MetaplexMetadata {
   name: string;
   metadataUri: string;
   symbol: string;
