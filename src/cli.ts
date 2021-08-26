@@ -1,13 +1,17 @@
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 
-import { testIndividualTransaction } from './testing';
+import { logToConsole } from './handlers/console.output';
+
+import { mimicThreeSeparateTransactionFinds } from './testing';
 import { checkTransaction } from './transactions';
-import { TxType } from './types';
+import { Transaction } from './types';
 
 // SMB Program Account Key
 const programAccountKey = new PublicKey(
   'GvQVaDNLV7zAPNx35FqWmgwuxa4B2h5tuuL73heqSf1C'
 );
+
+const notificationHandlers = [logToConsole];
 
 (async function () {
   try {
@@ -18,9 +22,8 @@ const programAccountKey = new PublicKey(
     console.log(`Current Slot: ${slotResult} @ ${blockTime}`);
 
     if (process.env.TESTING) {
-      await testIndividualTransaction(conn, TxType.DELISTING);
-      await testIndividualTransaction(conn, TxType.LISTING);
-      await testIndividualTransaction(conn, TxType.SALE);
+      await mimicThreeSeparateTransactionFinds(conn, notificationHandlers);
+
       return;
     }
 

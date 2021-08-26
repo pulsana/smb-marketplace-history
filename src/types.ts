@@ -61,6 +61,8 @@ export interface SaleTransaction extends Transaction {
   data: SaleTransactionData;
 }
 
+export type NotificationHandler = (tx: Transaction) => void;
+
 export enum SolanaProgram {
   SPL_TOKEN = 'spl-token',
   SYSTEM = 'system',
