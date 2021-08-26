@@ -2,8 +2,8 @@ import { Connection, PublicKey } from '@solana/web3.js';
 
 import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
+import { getMetadataForMintToken } from '../metadata';
 import { SolanaProgram, SolanaProgramInstructionType } from '../types';
-import { getMetadataAddressForMint } from '../utils';
 
 // TODO: unhardcode and pass in
 const MARKETPLACE_ADDRESS = 'G6xptnrkj4bxg9H9ZyPzmAnNsGghSxZ7oBCL1KNKJUza';
@@ -62,16 +62,6 @@ export async function parseListTx(
     console.error('not right friend....');
   }
 
-  const nftPDA = await getMetadataAddressForMint({
-    mintTokenPublicKey: new PublicKey(nftMintAddr),
-  });
-
-
-  // TODO: use for checks
-  // const nftOwnerAddr = new PublicKey(tokenMint.owner);
-
-  const mintinfo = await conn.getAccountInfo(nftPDA);
-
-  console.log(`Public Key: ${nftPDA.toString()}`);
-  console.log(`Mint Info: ${JSON.stringify(mintinfo, null, 2)}`);
+  const metadataForMintToken = await getMetadataForMintToken(conn, nftMintAddr);
+  console.log(metadataForMintToken);
 }

@@ -1,13 +1,10 @@
-import {
-  Connection,
-  PublicKey,
-} from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { AccountLayout } from '@solana/spl-token';
 
 import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
+import { getMetadataForMintToken } from '../metadata';
 import { SolanaProgram, SolanaProgramInstructionType } from '../types';
-import { getMetadataAddressForMint } from '../utils';
 
 export async function parseDelistTx(
   conn: Connection,
@@ -35,15 +32,9 @@ export async function parseDelistTx(
   );
   const tokenMint = AccountLayout.decode(tokenAccountInfo.data);
 
-  const nftMintAddr = new PublicKey(tokenMint.mint);
-  const nftOwnerAddr = new PublicKey(tokenMint.owner);
+  const nftMintAddr = tokenMint.mint;
+  // const nftOwnerAddr = new PublicKey(tokenMint.owner);
 
-  const nftPDA = await getMetadataAddressForMint({
-    mintTokenPublicKey: new PublicKey(nftMintAddr),
-  });
-
-  const mintinfo = await conn.getAccountInfo(nftPDA);
-
-  console.log(`Public Key: ${nftPDA.toString()}`);
-  console.log(`Mint Info: ${JSON.stringify(mintinfo, null, 2)}`);
+  const metadataForMintToken = await getMetadataForMintToken(conn, nftMintAddr);
+  console.log(metadataForMintToken);
 }

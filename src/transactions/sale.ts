@@ -1,9 +1,9 @@
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
+import { getMetadataForMintToken } from '../metadata';
 import { SolanaProgram, SolanaProgramInstructionType } from '../types';
-import { getMetadataAddressForMint } from '../utils';
 
 const MARKETPLACE_ADDRESS = 'G6xptnrkj4bxg9H9ZyPzmAnNsGghSxZ7oBCL1KNKJUza';
 const FEE_DESTINATION_ADDRESS = 'bDmnDkeV7xqWsEwKQEgZny6vXbHBoCYrjxA4aCr9fHU';
@@ -62,12 +62,7 @@ export async function parseSaleTx(
   });
 
   const nftMintAddr = initAccountInstruction.parsed.info.mint;
-  const nftPDA = await getMetadataAddressForMint({
-    mintTokenPublicKey: new PublicKey(nftMintAddr),
-  });
+  const metadataForMintToken = await getMetadataForMintToken(conn, nftMintAddr);
 
-  const mintinfo = await conn.getAccountInfo(nftPDA);
-
-  console.log(`Public Key: ${nftPDA.toString()}`);
-  console.log(`Mint Info: ${JSON.stringify(mintinfo, null, 2)}`);
+  console.log(metadataForMintToken);
 }
