@@ -4,6 +4,7 @@ export enum SolanaProgram {
 }
 
 export enum SolanaProgramInstructionType {
+  ALLOCATE = 'allocate',
   INITIALIZE_ACCOUNT = 'initializeAccount',
   SET_AUTHORITY = 'setAuthority',
   TRANSFER = 'transfer',
