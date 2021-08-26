@@ -33,6 +33,8 @@ export interface DelistingTransaction extends Transaction {
 export interface ListingTransaction extends Transaction {
   data: {
     sellerAddress: string;
+    listingPrice: string;
+    listingPriceInSOL: string;
     listingFee: string;
     listingFeeInSOL: string;
   };

@@ -1,4 +1,6 @@
+import base58 from 'bs58';
 import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import Big from 'big.js';
 
 import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
@@ -87,8 +89,27 @@ export async function parseListTx(
   const nftMintAddr = initAccountInstruction.parsed.info.mint;
   const nftMetadata = await getMetadataForMintToken(conn, nftMintAddr);
 
+  const metadataForInstructions = instrs.find((ix) => {
+    const isMatch = ix.accounts && ix.data;
+
+    return isMatch;
+  });
+
+  const dataFromInstrsForSaleInfo = metadataForInstructions.data;
+  const bytes = base58.decode(dataFromInstrsForSaleInfo);
+  const priceInLamports = bytes.readBigUInt64LE(1, 8);
+
+  const priceInLamportsBN = new Big(priceInLamports);
+  const lamportsPerSolBigNum = new Big(LAMPORTS_PER_SOL);
+
+  const listingPriceInSOL = priceInLamportsBN
+    .div(lamportsPerSolBigNum)
+    .toFixed(8);
+
   const listingData = {
     sellerAddress: listerAddress,
+    listingPrice: priceInLamportsBN.toString(),
+    listingPriceInSOL,
     listingFee: listingFeeInLamports,
     listingFeeInSOL: listingFee,
   };
