@@ -17,6 +17,30 @@ export interface NFTMetadata extends MetaplexMetadata {
   attrs: SMBAttributes;
 }
 
+export interface Transaction {
+  nft: MetaplexMetadata;
+}
+
+export interface DelistingTransaction extends Transaction {
+  sellerAddress: string;
+}
+
+export interface ListingTransaction extends Transaction {
+  sellerAddress: string;
+  nftAddress: string;
+  listingFee: string;
+  listingFeeInSOL: string;
+}
+
+export interface SaleTransaction extends Transaction {
+  buyerAddress: string;
+  nftAddress: string;
+  saleAmount: string;
+  saleAmountInSOL: string;
+  feeAmount: string;
+  feeAmountInSOL: string;
+}
+
 export enum SolanaProgram {
   SPL_TOKEN = 'spl-token',
   SYSTEM = 'system',
