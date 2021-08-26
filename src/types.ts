@@ -28,7 +28,7 @@ export interface Transaction {
 
 export interface TransactionData {
   nftAddress: string;
-  nft: MetaplexMetadata;
+  nft: NFTMetadata;
 }
 
 export interface DelistingTransactionData extends TransactionData {
