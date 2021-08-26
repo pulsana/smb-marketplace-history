@@ -4,10 +4,9 @@ import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
 import { getMetadataForMintToken } from '../metadata';
 import {
-  SaleTransaction,
+  SaleTransactionData,
   SolanaProgram,
   SolanaProgramInstructionType,
-  TxType,
 } from '../types';
 
 const MARKETPLACE_ADDRESS = 'G6xptnrkj4bxg9H9ZyPzmAnNsGghSxZ7oBCL1KNKJUza';
@@ -17,15 +16,7 @@ export async function parseSaleTx(
   conn: Connection,
   txHash: string,
   instrs: any
-): Promise<SaleTransaction> {
-  const saleTxInfo: SaleTransaction = {
-    type: TxType.SALE,
-    hash: txHash,
-    data: null,
-    nftAddress: null,
-    nft: null,
-  };
-
+): Promise<SaleTransactionData> {
   const transferForFee = instrs.find((ix) => {
     return (
       ix.program === SolanaProgram.SYSTEM &&
@@ -82,11 +73,9 @@ export async function parseSaleTx(
     saleAmountInSOL: saleAmountInSOL,
     feeAmount: feeAmount,
     feeAmountInSOL: feeAmountInSOL,
+    nftAddress: nftMintAddr,
+    nft: nftMetadata,
   };
 
-  saleTxInfo.nftAddress = nftMintAddr;
-  saleTxInfo.nft = nftMetadata;
-  saleTxInfo.data = saleData;
-
-  return saleTxInfo;
+  return saleData;
 }

@@ -5,25 +5,16 @@ import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
 import { getMetadataForMintToken } from '../metadata';
 import {
-  DelistingTransaction,
+  DelistingTransactionData,
   SolanaProgram,
   SolanaProgramInstructionType,
-  TxType,
 } from '../types';
 
 export async function parseDelistTx(
   conn: Connection,
   txHash: string,
   instrs: any
-): Promise<DelistingTransaction> {
-  const delistingTxInfo: DelistingTransaction = {
-    type: TxType.LISTING,
-    hash: txHash,
-    data: null,
-    nftAddress: null,
-    nft: null,
-  };
-
+): Promise<DelistingTransactionData> {
   const tokenTransferInstruction = instrs.find((ix) => {
     return (
       ix.program === SolanaProgram.SPL_TOKEN &&
@@ -51,11 +42,9 @@ export async function parseDelistTx(
 
   const delistingData = {
     sellerAddress: listerAddress,
+    nftAddress: nftMintAddr,
+    nft: nftMetadata,
   };
 
-  delistingTxInfo.nftAddress = nftMintAddr;
-  delistingTxInfo.nft = nftMetadata;
-  delistingTxInfo.data = delistingData;
-
-  return delistingTxInfo;
+  return delistingData;
 }

@@ -13,11 +13,11 @@ import {
   SYSTEM_PROGRAM_KEY,
 } from './constants';
 import {
-  DelistingTransaction,
-  ListingTransaction,
-  SaleTransaction,
+  DelistingTransactionData,
+  ListingTransactionData,
+  SaleTransactionData,
   Transaction,
-  Tx,
+  TransactionData,
   TxStatus,
   TxType,
 } from './types';
@@ -27,33 +27,48 @@ export async function checkTransaction(
   conn: Connection,
   confSignature: ConfirmedSignatureInfo
 ) {
+  const blockTime = confSignature.blockTime;
   const txHash = confSignature.signature;
+
   let txType = null;
+  let transaction: Transaction = {
+    hash: txHash,
+    slot: confSignature.slot,
+    type: null,
+    blockTime: new Date(blockTime * 1000),
+    status: null,
+    data: null,
+  };
 
   try {
-    const tx = await conn.getParsedConfirmedTransaction(txHash);
-    const programs = groupMetaInstructionsByProgram(tx.meta);
+    const ptx = await conn.getParsedConfirmedTransaction(txHash);
+    const programs = groupMetaInstructionsByProgram(ptx.meta);
 
     txType = determineTransactionType(programs);
+    const status = ptx.meta.err ? TxStatus.FAILURE : TxStatus.SUCCESS;
+    if (status === TxStatus.FAILURE) {
+      // TODO: should we skip rest of work??
+    }
 
-    const blockTime = confSignature.blockTime;
-    const txObj: Tx = {
-      hash: txHash,
-      type: txType,
-      status: tx.meta.err ? TxStatus.FAILURE : TxStatus.SUCCESS,
-      blockTime: new Date(blockTime * 1000),
-    };
+    const transactionData = await parseTransactionDataByType({
+      conn,
+      ptx,
+      txType,
+    });
 
-    console.log(txObj);
+    transaction.type = txType;
+    transaction.status = status;
+    transaction.data = transactionData;
   } catch (e) {
     console.log('\t❗️❗️❗️ ERROR');
     console.log(`\t\tTx Hash: ${txHash}`);
     console.log(`\t\tTx Type: ${txType}`);
     console.log(`\t\tErr Message: ${e}`);
   }
+  return transaction;
 }
 
-export async function parseTransactionByType({
+export async function parseTransactionDataByType({
   conn,
   ptx,
   txType,
@@ -61,7 +76,7 @@ export async function parseTransactionByType({
   conn: Connection;
   ptx: ParsedConfirmedTransaction;
   txType: TxType;
-}): Promise<Transaction> {
+}): Promise<TransactionData> {
   const txHash = ptx.transaction.signatures[0];
 
   const instrs = mergeInstructions(
@@ -69,23 +84,27 @@ export async function parseTransactionByType({
     ptx.meta.innerInstructions
   );
 
-  let transaction: Transaction = null;
+  let transactionData: TransactionData = null;
 
   if (txType === TxType.DELISTING) {
-    transaction = <DelistingTransaction>(
+    transactionData = <DelistingTransactionData>(
       await parseDelistTx(conn, txHash, instrs)
     );
   }
 
   if (txType === TxType.LISTING) {
-    transaction = <ListingTransaction>await parseListTx(conn, txHash, instrs);
+    transactionData = <ListingTransactionData>(
+      await parseListTx(conn, txHash, instrs)
+    );
   }
 
   if (txType === TxType.SALE) {
-    transaction = <SaleTransaction>await parseSaleTx(conn, txHash, instrs);
+    transactionData = <SaleTransactionData>(
+      await parseSaleTx(conn, txHash, instrs)
+    );
   }
 
-  return transaction;
+  return transactionData;
 }
 
 export function determineTransactionType(programsWithInstructions) {

@@ -6,10 +6,9 @@ import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
 import { getMetadataForMintToken } from '../metadata';
 import {
-  ListingTransaction,
+  ListingTransactionData,
   SolanaProgram,
   SolanaProgramInstructionType,
-  TxType,
 } from '../types';
 
 // TODO: unhardcode and pass in
@@ -20,15 +19,7 @@ export async function parseListTx(
   conn: Connection,
   txHash: string,
   instrs: any
-): Promise<ListingTransaction> {
-  const listingTxInfo: ListingTransaction = {
-    type: TxType.LISTING,
-    hash: txHash,
-    data: null,
-    nftAddress: null,
-    nft: null,
-  };
-
+): Promise<ListingTransactionData> {
   const initAccountInstruction = instrs.find((ix) => {
     return (
       ix.program === SolanaProgram.SPL_TOKEN &&
@@ -112,11 +103,9 @@ export async function parseListTx(
     listingPriceInSOL,
     listingFee: listingFeeInLamports,
     listingFeeInSOL: listingFee,
+    nftAddress: nftMintAddr,
+    nft: nftMetadata,
   };
 
-  listingTxInfo.nftAddress = nftMintAddr;
-  listingTxInfo.nft = nftMetadata;
-  listingTxInfo.data = listingData;
-
-  return listingTxInfo;
+  return listingData;
 }
