@@ -2,9 +2,8 @@ import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 
 import { logToConsole } from './handlers/console.output';
 
+import { runRealtimeService } from './services/realtime';
 import { mimicThreeSeparateTransactionFinds } from './testing';
-import { checkTransaction } from './transactions';
-import { Transaction } from './types';
 
 // SMB Program Account Key
 const programAccountKey = new PublicKey(
@@ -12,6 +11,7 @@ const programAccountKey = new PublicKey(
 );
 
 const notificationHandlers = [logToConsole];
+const INTERVAL_CHECK__IN_MS = 10000;
 
 (async function () {
   try {
@@ -27,15 +27,8 @@ const notificationHandlers = [logToConsole];
       return;
     }
 
-    const fetched = await conn.getConfirmedSignaturesForAddress2(
-      programAccountKey,
-      {
-        limit: 10,
-      }
-    );
-
-    for (const tx of fetched) {
-      await checkTransaction(conn, tx);
+    if (process.env.REALTIME) {
+      runRealtimeService(conn, programAccountKey, notificationHandlers, INTERVAL_CHECK__IN_MS);
     }
   } catch (e) {
     console.error('Error Occurred:', e);
