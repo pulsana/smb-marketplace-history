@@ -1,3 +1,9 @@
+export interface NFTMetadata {
+  name: string;
+  metadataUri: string;
+  symbol: string;
+}
+
 export enum SolanaProgram {
   SPL_TOKEN = 'spl-token',
   SYSTEM = 'system',
