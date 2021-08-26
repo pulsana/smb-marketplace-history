@@ -18,27 +18,34 @@ export interface NFTMetadata extends MetaplexMetadata {
 }
 
 export interface Transaction {
+  hash: string;
+  type: TxType;
+  nftAddress: string;
   nft: MetaplexMetadata;
 }
 
 export interface DelistingTransaction extends Transaction {
-  sellerAddress: string;
+  data: {
+    sellerAddress: string;
+  };
 }
 
 export interface ListingTransaction extends Transaction {
-  sellerAddress: string;
-  nftAddress: string;
-  listingFee: string;
-  listingFeeInSOL: string;
+  data: {
+    sellerAddress: string;
+    listingFee: string;
+    listingFeeInSOL: string;
+  };
 }
 
 export interface SaleTransaction extends Transaction {
-  buyerAddress: string;
-  nftAddress: string;
-  saleAmount: string;
-  saleAmountInSOL: string;
-  feeAmount: string;
-  feeAmountInSOL: string;
+  data: {
+    buyerAddress: string;
+    saleAmount: string;
+    saleAmountInSOL: string;
+    feeAmount: string;
+    feeAmountInSOL: string;
+  };
 }
 
 export enum SolanaProgram {

@@ -70,7 +70,8 @@ export async function parseTransactionByType({
   }
 
   if (txType === TxType.SALE) {
-    await parseSaleTx(conn, txHash, instrs);
+    const saleTransactionInfo = await parseSaleTx(conn, txHash, instrs);
+    console.log(saleTransactionInfo);
   }
 }
 
