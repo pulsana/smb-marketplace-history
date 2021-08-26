@@ -12,7 +12,15 @@ import {
   METAPLEX_SPL_TOKEN_PROGRAM_KEY,
   SYSTEM_PROGRAM_KEY,
 } from './constants';
-import { Tx, TxStatus, TxType } from './types';
+import {
+  DelistingTransaction,
+  ListingTransaction,
+  SaleTransaction,
+  Transaction,
+  Tx,
+  TxStatus,
+  TxType,
+} from './types';
 import { groupMetaInstructionsByProgram, mergeInstructions } from './utils';
 
 export async function checkTransaction(
@@ -53,7 +61,7 @@ export async function parseTransactionByType({
   conn: Connection;
   ptx: ParsedConfirmedTransaction;
   txType: TxType;
-}) {
+}): Promise<Transaction> {
   const txHash = ptx.transaction.signatures[0];
 
   const instrs = mergeInstructions(
@@ -61,20 +69,23 @@ export async function parseTransactionByType({
     ptx.meta.innerInstructions
   );
 
+  let transaction: Transaction = null;
+
   if (txType === TxType.DELISTING) {
-    const delistingTransactionInfo = await parseDelistTx(conn, txHash, instrs);
-    console.log(delistingTransactionInfo);
+    transaction = <DelistingTransaction>(
+      await parseDelistTx(conn, txHash, instrs)
+    );
   }
 
   if (txType === TxType.LISTING) {
-    const listingTransactionInfo = await parseListTx(conn, txHash, instrs);
-    console.log(listingTransactionInfo);
+    transaction = <ListingTransaction>await parseListTx(conn, txHash, instrs);
   }
 
   if (txType === TxType.SALE) {
-    const saleTransactionInfo = await parseSaleTx(conn, txHash, instrs);
-    console.log(saleTransactionInfo);
+    transaction = <SaleTransaction>await parseSaleTx(conn, txHash, instrs);
   }
+
+  return transaction;
 }
 
 export function determineTransactionType(programsWithInstructions) {
