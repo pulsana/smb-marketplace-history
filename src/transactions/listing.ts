@@ -1,9 +1,14 @@
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 import { METAPLEX_TOKEN_PROGRAM_ID } from '../metaplex/constants';
 
 import { getMetadataForMintToken } from '../metadata';
-import { SolanaProgram, SolanaProgramInstructionType } from '../types';
+import {
+  ListingTransaction,
+  SolanaProgram,
+  SolanaProgramInstructionType,
+  TxType,
+} from '../types';
 
 // TODO: unhardcode and pass in
 const MARKETPLACE_ADDRESS = 'G6xptnrkj4bxg9H9ZyPzmAnNsGghSxZ7oBCL1KNKJUza';
@@ -13,7 +18,15 @@ export async function parseListTx(
   conn: Connection,
   txHash: string,
   instrs: any
-) {
+): Promise<ListingTransaction> {
+  const listingTxInfo: ListingTransaction = {
+    type: TxType.LISTING,
+    hash: txHash,
+    data: null,
+    nftAddress: null,
+    nft: null,
+  };
+
   const initAccountInstruction = instrs.find((ix) => {
     return (
       ix.program === SolanaProgram.SPL_TOKEN &&
@@ -51,16 +64,38 @@ export async function parseListTx(
     console.error('something does not make sense....');
   }
 
-  // const listerAddress =
-  //   marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info
-  //     .multisigAuthority;
+  const listerAddress =
+    marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info
+      .multisigAuthority;
   const authorityForMintToken =
-  marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info.newAuthority;
+    marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info.newAuthority;
   if (authorityForMintToken !== MARKETPLACE_ADDRESS) {
     console.error('not right friend....');
   }
 
+  const listingFeeInstruction = instrs.find((ix) => {
+    return (
+      ix.program === SolanaProgram.SYSTEM &&
+      ix.parsed.type === SolanaProgramInstructionType.TRANSFER &&
+      ix.parsed.info.destination === FEE_DESTINATION_ADDRESS
+    );
+  });
+
+  const listingFeeInLamports = listingFeeInstruction?.parsed?.info?.lamports;
+  const listingFee = (listingFeeInLamports / LAMPORTS_PER_SOL).toFixed(8);
+
   const nftMintAddr = initAccountInstruction.parsed.info.mint;
   const nftMetadata = await getMetadataForMintToken(conn, nftMintAddr);
-  console.log(nftMetadata);
+
+  const listingData = {
+    sellerAddress: listerAddress,
+    listingFee: listingFeeInLamports,
+    listingFeeInSOL: listingFee,
+  };
+
+  listingTxInfo.nftAddress = nftMintAddr;
+  listingTxInfo.nft = nftMetadata;
+  listingTxInfo.data = listingData;
+
+  return listingTxInfo;
 }

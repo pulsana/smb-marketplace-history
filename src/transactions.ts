@@ -66,7 +66,8 @@ export async function parseTransactionByType({
   }
 
   if (txType === TxType.LISTING) {
-    await parseListTx(conn, txHash, instrs);
+    const listingTransactionInfo = await parseListTx(conn, txHash, instrs);
+    console.log(listingTransactionInfo);
   }
 
   if (txType === TxType.SALE) {
