@@ -62,7 +62,8 @@ export async function parseTransactionByType({
   );
 
   if (txType === TxType.DELISTING) {
-    await parseDelistTx(conn, txHash, instrs);
+    const delistingTransactionInfo = await parseDelistTx(conn, txHash, instrs);
+    console.log(delistingTransactionInfo);
   }
 
   if (txType === TxType.LISTING) {
