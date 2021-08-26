@@ -76,7 +76,7 @@ export async function parseSaleTx(
   const nftMetadata = await getMetadataForMintToken(conn, nftMintAddr);
 
   const saleData = {
-    buyerAddress: '',
+    buyerAddress: transferForSale.parsed.info.source,
     saleAmount: saleAmount,
     saleAmountInSOL: saleAmountInSOL,
     feeAmount: feeAmount,
