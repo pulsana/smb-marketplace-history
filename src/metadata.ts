@@ -3,17 +3,20 @@ import { Connection, PublicKey } from '@solana/web3.js';
 
 import { decodeMetadata } from './metaplex/metadata';
 
-import { MetaplexMetadata, SMBNFTMetadata } from './types';
+import { MetaplexMetadata, NFTMetadata, SMBAttributes } from './types';
 import { getMetadataAddressForMint } from './utils';
 
 export async function getNFTMetadataFromArweave(
   arweaveUri
-): Promise<SMBNFTMetadata> {
+): Promise<SMBAttributes> {
   const nftInfoResponse = await got(arweaveUri);
   return JSON.parse(nftInfoResponse.body);
 }
 
-export async function getMetadataForMintToken(conn: Connection, addr: string) {
+export async function getMetadataForMintToken(
+  conn: Connection,
+  addr: string
+): Promise<NFTMetadata> {
   const metaplexMetadata: MetaplexMetadata = {
     name: null,
     metadataUri: null,
@@ -35,5 +38,5 @@ export async function getMetadataForMintToken(conn: Connection, addr: string) {
     metaplexMetadata.metadataUri
   );
 
-  console.log(nftMetadata);
+  return { ...metaplexMetadata, attrs: nftMetadata };
 }

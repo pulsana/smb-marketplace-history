@@ -4,7 +4,7 @@ export interface MetaplexMetadata {
   symbol: string;
 }
 
-export interface SMBNFTMetadata {
+export interface SMBAttributes {
   description: string;
   external_url?: string;
   image: string;
@@ -12,6 +12,9 @@ export interface SMBNFTMetadata {
   properties: any;
   seller_fee_basis_points: number;
   symbol: string;
+}
+export interface NFTMetadata extends MetaplexMetadata {
+  attrs: SMBAttributes;
 }
 
 export enum SolanaProgram {

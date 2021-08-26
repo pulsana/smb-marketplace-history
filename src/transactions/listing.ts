@@ -54,14 +54,13 @@ export async function parseListTx(
   // const listerAddress =
   //   marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info
   //     .multisigAuthority;
-  const nftMintAddr = initAccountInstruction.parsed.info.mint;
-
   const authorityForMintToken =
-    marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info.newAuthority;
+  marketplaceOwnsNewAccountToHoldTokenInstruction.parsed.info.newAuthority;
   if (authorityForMintToken !== MARKETPLACE_ADDRESS) {
     console.error('not right friend....');
   }
 
-  const metadataForMintToken = await getMetadataForMintToken(conn, nftMintAddr);
-  console.log(metadataForMintToken);
+  const nftMintAddr = initAccountInstruction.parsed.info.mint;
+  const nftMetadata = await getMetadataForMintToken(conn, nftMintAddr);
+  console.log(nftMetadata);
 }

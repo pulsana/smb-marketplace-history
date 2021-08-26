@@ -62,7 +62,7 @@ export async function parseSaleTx(
   });
 
   const nftMintAddr = initAccountInstruction.parsed.info.mint;
-  const metadataForMintToken = await getMetadataForMintToken(conn, nftMintAddr);
+  const nftMetadata = await getMetadataForMintToken(conn, nftMintAddr);
 
-  console.log(metadataForMintToken);
+  console.log(nftMetadata);
 }

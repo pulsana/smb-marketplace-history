@@ -31,10 +31,9 @@ export async function parseDelistTx(
     new PublicKey(tokenAccountForSeller)
   );
   const tokenMint = AccountLayout.decode(tokenAccountInfo.data);
-
-  const nftMintAddr = tokenMint.mint;
   // const nftOwnerAddr = new PublicKey(tokenMint.owner);
 
-  const metadataForMintToken = await getMetadataForMintToken(conn, nftMintAddr);
-  console.log(metadataForMintToken);
+  const nftMintAddr = tokenMint.mint;
+  const nftMetadata = await getMetadataForMintToken(conn, nftMintAddr);
+  console.log(nftMetadata);
 }
