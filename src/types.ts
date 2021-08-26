@@ -41,6 +41,7 @@ export interface ListingTransaction extends Transaction {
 export interface SaleTransaction extends Transaction {
   data: {
     buyerAddress: string;
+    sellerAddress: string;
     saleAmount: string;
     saleAmountInSOL: string;
     feeAmount: string;

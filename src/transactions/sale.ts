@@ -77,6 +77,7 @@ export async function parseSaleTx(
 
   const saleData = {
     buyerAddress: transferForSale.parsed.info.source,
+    sellerAddress: transferForSale.parsed.info.destination,
     saleAmount: saleAmount,
     saleAmountInSOL: saleAmountInSOL,
     feeAmount: feeAmount,
