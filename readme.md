@@ -22,6 +22,12 @@ A future repository will be provided that works with the SMB Marketplace, Solana
 
 Licensed under GLPv3 — see [LICENSE](https://github.com/boxwooddev/smb-marketplace-history/block/main/LICENSE).
 
+## Related Projects
+
+A fellow [MonkeDAO](https://monkedao.io) member (the wonderful [hoak](https://twitter.com/hoaktrades)) built the Solana Observer bot on Twitter.
+
+* [MonkeDAO/observer](https://github.com/MonkeDAO/observer)
+
 ## Supporting
 
 If so inclined, consider supporting the developer by sending tips to:
