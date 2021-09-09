@@ -17,3 +17,7 @@ Certain decisions were made in a short time window and is not the most optimal w
 The goal of open sourcing this project is to provide everyone with a view of how it was initially done.
 
 A future repository will be provided that works with the SMB Marketplace, Solanart, and DigitalEyes (+ more).
+
+## License
+
+Licensed under GLPv3 — see [LICENSE](https://github.com/boxwooddev/smb-marketplace-history/block/main/LICENSE).
