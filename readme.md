@@ -21,3 +21,9 @@ A future repository will be provided that works with the SMB Marketplace, Solana
 ## License
 
 Licensed under GLPv3 — see [LICENSE](https://github.com/boxwooddev/smb-marketplace-history/block/main/LICENSE).
+
+## Supporting
+
+If so inclined, consider supporting the developer by sending tips to:
+
+SOL → 3m1JE6nMWGDzCQLMxiVNVa2H8F3CmDVgHJW13FQSUkfZ
